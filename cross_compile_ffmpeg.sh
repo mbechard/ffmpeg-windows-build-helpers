@@ -930,7 +930,7 @@ build_lame() {
   do_git_checkout https://github.com/rbrito/lame.git
   cd lame_git
     apply_patch file://$patch_dir/lame3.patch # work on mtune=generic type builds :| TODO figure out why, report back to https://sourceforge.net/p/lame/bugs/443/
-    generic_configure "--enable-nasm --disable-decoder --disable-frontend"
+    generic_configure "--enable-nasm --disable-decoder --disable-frontend --disable-static --enable-shared"
     cpu_count=1 # can't handle it apparently... http://betterlogic.com/roger/2017/07/mp3lame-woe/
     do_make_and_make_install
     cpu_count=$original_cpu_count
@@ -1723,6 +1723,7 @@ build_ffmpeg() {
     fi
     config_options+=" --enable-avresample" # guess this is some kind of libav specific thing (the FFmpeg fork) but L-Smash needs it so why not always build it :)
 
+    config_options+="--disable-decoder=prores --disable-encoder=prores --disable-decoder=eacmv --disable-decoder=eamad --disable-decoder=eatgq --disable-decoder=eatgv --disable-decoder=eatqi --disable-decoder=bethsoftvid --disable-demuxer=aac --disable-parser=dvdsub --disable-decoder=dvdsub --disable-decoder=prores_lgpl"
     for i in $CFLAGS; do
       config_options+=" --extra-cflags=$i" # --extra-cflags may not be needed here, but adds it to the final console output which I like for debugging purposes
     done
