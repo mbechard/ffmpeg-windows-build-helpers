@@ -1723,7 +1723,7 @@ build_ffmpeg() {
     fi
     config_options+=" --enable-avresample" # guess this is some kind of libav specific thing (the FFmpeg fork) but L-Smash needs it so why not always build it :)
 
-    config_options+="--disable-decoder=prores --disable-encoder=prores --disable-decoder=eacmv --disable-decoder=eamad --disable-decoder=eatgq --disable-decoder=eatgv --disable-decoder=eatqi --disable-decoder=bethsoftvid --disable-demuxer=aac --disable-parser=dvdsub --disable-decoder=dvdsub --disable-decoder=prores_lgpl"
+    config_options+=" --disable-gpl --disable-decoder=prores --disable-encoder=prores --disable-decoder=eacmv --disable-decoder=eamad --disable-decoder=eatgq --disable-decoder=eatgv --disable-decoder=eatqi --disable-decoder=bethsoftvid --disable-demuxer=aac --disable-parser=dvdsub --disable-decoder=dvdsub --disable-decoder=prores_lgpl"
     for i in $CFLAGS; do
       config_options+=" --extra-cflags=$i" # --extra-cflags may not be needed here, but adds it to the final console output which I like for debugging purposes
     done
