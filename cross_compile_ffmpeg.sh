@@ -1831,6 +1831,7 @@ build_ffmpeg() {
     config_options+=" --enable-decoder=wmv3image"
     config_options+=" --enable-encoder=wrapped_avframe --enable-decoder=wrapped_avframe"
     config_options+=" --enable-encoder=y41p --enable-decoder=y41p"
+    config_options+=" --enable-encoder=qtrle --enable-decoder=qtrle"
     config_options+=" --enable-decoder=ylc"
     config_options+=" --enable-decoder=yuv4"
     # audio codecs
