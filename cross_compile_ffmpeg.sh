@@ -1892,6 +1892,8 @@ build_ffmpeg() {
     config_options+=" --enable-encoder=wmav1 --enable-decoder=wmav1"
     config_options+=" --enable-encoder=wmav2 --enable-decoder=wmav2"
     config_options+=" --enable-decoder=wmavoice"
+    config_options+=" --enable-decoder=dpx"
+    config_options+=" --enable-encoder=dpx"
 
 
 
