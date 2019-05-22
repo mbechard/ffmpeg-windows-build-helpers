@@ -1894,6 +1894,14 @@ build_ffmpeg() {
     config_options+=" --enable-decoder=wmavoice"
     config_options+=" --enable-decoder=dpx"
     config_options+=" --enable-encoder=dpx"
+    
+    # protocols
+    config_options+=" --disable-protocol=rtmp"
+    config_options+=" --disable-protocol=rtmps"
+    config_options+=" --disable-protocol=rtmpt"
+    config_options+=" --disable-protocol=rtmpts"
+    config_options+=" --disable-protocol=rtmpe"
+    config_options+=" --disable-protocol=rtmpte"
 
 
 
