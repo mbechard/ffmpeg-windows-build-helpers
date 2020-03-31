@@ -1896,12 +1896,12 @@ build_ffmpeg() {
     config_options+=" --enable-encoder=dpx"
     
     # protocols
-    config_options+=" --disable-protocol=rtmp"
-    config_options+=" --disable-protocol=rtmps"
-    config_options+=" --disable-protocol=rtmpt"
-    config_options+=" --disable-protocol=rtmpts"
-    config_options+=" --disable-protocol=rtmpe"
-    config_options+=" --disable-protocol=rtmpte"
+    config_options+=" --enable-protocol=rtmp"
+    config_options+=" --enable-protocol=rtmps"
+    config_options+=" --enable-protocol=rtmpt"
+    config_options+=" --enable-protocol=rtmpts"
+    config_options+=" --enable-protocol=rtmpe"
+    config_options+=" --enable-protocol=rtmpte"
 
 
 
