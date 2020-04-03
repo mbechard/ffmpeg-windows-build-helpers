@@ -1834,6 +1834,7 @@ build_ffmpeg() {
     config_options+=" --enable-encoder=qtrle --enable-decoder=qtrle"
     config_options+=" --enable-decoder=ylc"
     config_options+=" --enable-decoder=yuv4"
+    config_options+=" --enable-decoder=dvvideo --enable-encoder=dvvideo"
     # audio codecs
     config_options+=" --enable-decoder=aac"
     config_options+=" --enable-decoder=aac_latm"
