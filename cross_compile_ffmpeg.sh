@@ -1205,7 +1205,7 @@ build_lame() {
   do_git_checkout https://github.com/rbrito/lame.git
   cd lame_git
     apply_patch file://$patch_dir/lame3.patch # work on mtune=generic type builds :| TODO figure out why, report back to https://sourceforge.net/p/lame/bugs/443/
-    generic_configure "--enable-nasm"
+    generic_configure "--enable-nasm --disable-decoder --disable-frontend --disable-static --enable-shared"
     cpu_count=1 # can't handle it apparently... http://betterlogic.com/roger/2017/07/mp3lame-woe/
     do_make_and_make_install
     cpu_count=$original_cpu_count
@@ -2121,7 +2121,8 @@ build_ffmpeg() {
       local arch=x86_64
     fi
 
-    init_options="--pkg-config=pkg-config --pkg-config-flags=--static --extra-version=ffmpeg-windows-build-helpers --enable-version3 --disable-debug --disable-w32threads"
+    #init_options="--pkg-config=pkg-config --pkg-config-flags=--static --extra-version=ffmpeg-windows-build-helpers --enable-version3 --disable-debug --disable-w32threads"
+    init_options="--arch=$arch --target-os=mingw32 --cross-prefix=$cross_prefix --pkg-config=pkg-config --pkg-config-flags=--static --extra-version=ffmpeg-windows-build-helpers --enable-version3 --disable-debug --disable-doc --disable-htmlpages --disable-manpages --disable-podpages --disable-txtpages --disable-w32threads"
     if [[ $compiler_flavors != "native" ]]; then
       init_options+=" --arch=$arch --target-os=mingw32 --cross-prefix=$cross_prefix"
     else
@@ -2134,7 +2135,8 @@ build_ffmpeg() {
       init_options+=" --disable-schannel"
       # Fix WinXP incompatibility by disabling Microsoft's Secure Channel, because Windows XP doesn't support TLS 1.1 and 1.2, but with GnuTLS or OpenSSL it does.  XP compat!
     fi
-    config_options="$init_options --enable-libcaca --enable-gray --enable-libtesseract --enable-fontconfig --enable-gmp --enable-gnutls --enable-libass --enable-libbluray --enable-libbs2b --enable-libflite --enable-libfreetype --enable-libfribidi --enable-libgme --enable-libgsm --enable-libilbc --enable-libmodplug --enable-libmp3lame --enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libopus --enable-libsnappy --enable-libsoxr --enable-libspeex --enable-libtheora --enable-libtwolame --enable-libvo-amrwbenc --enable-libvorbis --enable-libwebp --enable-libzimg --enable-libzvbi --enable-libmysofa --enable-libopenjpeg  --enable-libopenh264 --enable-liblensfun  --enable-libvmaf --enable-libsrt --enable-demuxer=dash --enable-libxml2 --enable-opengl --enable-libdav1d --enable-cuda-llvm"
+    config_options="$init_options"
+    #config_options="$init_options --enable-libcaca --enable-gray --enable-libtesseract --enable-fontconfig --enable-gmp --enable-gnutls --enable-libass --enable-libbluray --enable-libbs2b --enable-libflite --enable-libfreetype --enable-libfribidi --enable-libgme --enable-libgsm --enable-libilbc --enable-libmodplug --enable-libmp3lame --enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libopus --enable-libsnappy --enable-libsoxr --enable-libspeex --enable-libtheora --enable-libtwolame --enable-libvo-amrwbenc --enable-libvorbis --enable-libwebp --enable-libzimg --enable-libzvbi --enable-libmysofa --enable-libopenjpeg  --enable-libopenh264 --enable-liblensfun  --enable-libvmaf --enable-libsrt --enable-demuxer=dash --enable-libxml2 --enable-opengl --enable-libdav1d --enable-cuda-llvm"
 
     if [ "$bits_target" != "32" ]; then
       #SVT-HEVC no longer needs to be disabled to configure with svt-av1, but svt-vp9 still conflicts with svt-av1 so svt-vp9 can only be compiled alone
@@ -2184,6 +2186,188 @@ build_ffmpeg() {
     # other possibilities:
     #   --enable-w32threads # [worse UDP than pthreads, so not using that]
     config_options+=" --enable-avresample" # guess this is some kind of libav specific thing (the FFmpeg fork) but L-Smash needs it so why not always build it :)
+
+    # Malcolm - Disable lots of stuff to start
+    config_options+=" --disable-gpl"
+    config_options+=" --disable-encoders"
+    config_options+=" --disable-decoders"
+    #config_options+=" --disable-hwaccels"
+    config_options+=" --disable-devices"
+    config_options+=" --disable-cuvid"
+    config_options+=" --disable-d3d11va"
+    config_options+=" --disable-dxva2"
+    config_options+=" --disable-ffnvcodec"
+    config_options+=" --disable-nvdec"
+    config_options+=" --disable-nvenc"
+    config_options+=" --disable-vdpau"
+    config_options+=" --disable-sdl2"
+
+    # general util libs
+    config_options+=" --enable-gmp"
+    config_options+=" --enable-gnutls"
+    config_options+=" --enable-libbs2b"
+    config_options+=" --enable-libfreetype"
+    config_options+=" --enable-libfribidi"
+    config_options+=" --enable-libgme"
+    config_options+=" --enable-libilbc"
+    config_options+=" --enable-libmodplug"
+    config_options+=" --enable-libmp3lame"
+    config_options+=" --enable-libmysofa"
+    config_options+=" --enable-libopenh264"
+    config_options+=" --enable-libopenjpeg"
+    config_options+=" --enable-libopus"
+    config_options+=" --enable-libsoxr"
+    config_options+=" --enable-libspeex"
+    config_options+=" --enable-libtheora"
+    config_options+=" --enable-libtwolame"
+    config_options+=" --enable-libvorbis"
+    config_options+=" --enable-libvpx"
+    config_options+=" --enable-libwebp"
+    config_options+=" --enable-libzimg"
+    config_options+=" --enable-libzimg"
+    config_options+=" --enable-libaom"
+
+    # video codecs
+    config_options+=" --enable-encoder=hap --enable-decoder=hap --enable-libsnappy"
+    #config_options+=" --enable-decoder=012v"
+    config_options+=" --enable-decoder=alias_pix"
+    config_options+=" --enable-decoder=ansi"
+    config_options+=" --enable-encoder=libaom_av1 --enable-decoder=libaom_av1"
+    config_options+=" --enable-decoder=avrn"
+    config_options+=" --enable-encoder=ayuv --enable-decoder=ayuv"
+    config_options+=" --enable-encoder=bmp --enable-decoder=bmp"
+    config_options+=" --enable-decoder=exr"
+    config_options+=" --enable-decoder=cfhd"
+    config_options+=" --enable-encoder=ffv1 --enable-decoder=ffv1"
+    config_options+=" --enable-encoder=ffvhuff --enable-decoder=ffvhuff"
+    config_options+=" --enable-encoder=flashsv --enable-decoder=flashsv"
+    config_options+=" --enable-encoder=flashsv2 --enable-decoder=flashsv2"
+    config_options+=" --enable-encoder=flv --enable-decoder=flv"
+    config_options+=" --enable-encoder=gif --enable-decoder=gif"
+    config_options+=" --enable-encoder=h261 --enable-decoder=h261"
+    config_options+=" --enable-encoder=h263 --enable-decoder=h263"
+    config_options+=" --enable-decoder=h263i"
+    config_options+=" --enable-encoder=h263p --enable-decoder=h263p"
+    config_options+=" --enable-decoder=h264"
+    config_options+=" --enable-decoder=h264_qsv --enable-encoder=h264_qsv"
+    config_options+=" --enable-decoder=hevc"
+    config_options+=" --enable-decoder=hevc_qsv --enable-encoder=hevc_qsv"
+    config_options+=" --enable-encoder=huffyuv --enable-decoder=huffyuv"
+    config_options+=" --enable-encoder=jpeg2000 --enable-decoder=jpeg2000"
+    config_options+=" --enable-encoder=jpegls --enable-decoder=jpegls"
+    config_options+=" --enable-encoder=mjpeg --enable-decoder=mjpeg"
+    config_options+=" --enable-encoder=mjpeg_qsv"
+    config_options+=" --enable-decoder=mjpegb"
+    config_options+=" --enable-encoder=mpeg1video --enable-decoder=mpeg1video"
+    config_options+=" --enable-encoder=mpeg2video --enable-decoder=mpeg2video"
+    config_options+=" --enable-encoder=mpeg2_qsv --enable-decoder=mpeg2_qsv"
+    config_options+=" --enable-encoder=mpeg4 --enable-decoder=mpeg4"
+    config_options+=" --enable-decoder=msmpeg4v1"
+    config_options+=" --enable-encoder=msmpeg4v2 --enable-decoder=msmpeg4v2"
+    config_options+=" --enable-encoder=msmpeg4v3 --enable-decoder=msmpeg4v3"
+    config_options+=" --enable-decoder=msrle"
+    config_options+=" --enable-encoder=png --enable-decoder=png"
+    config_options+=" --enable-encoder=ppm --enable-decoder=ppm"
+    config_options+=" --enable-decoder=psd"
+    config_options+=" --enable-encoder=r10k --enable-decoder=r10k"
+    config_options+=" --enable-encoder=r210 --enable-decoder=r210"
+    config_options+=" --enable-encoder=rawvideo --enable-decoder=rawvideo"
+    config_options+=" --enable-decoder=speedhq"
+    config_options+=" --enable-encoder=targa --enable-decoder=targa"
+    config_options+=" --enable-encoder=libtheora --enable-decoder=theora"
+    config_options+=" --enable-encoder=tiff --enable-decoder=tiff"
+    config_options+=" --enable-encoder=v210 --enable-decoder=v210"
+    config_options+=" --enable-decoder=v210x"
+    config_options+=" --enable-encoder=v308 --enable-decoder=v308"
+    config_options+=" --enable-encoder=v408 --enable-decoder=v408"
+    config_options+=" --enable-encoder=v410 --enable-decoder=v410"
+    config_options+=" --enable-decoder=vc1"
+    config_options+=" --enable-decoder=vc1image"
+    config_options+=" --enable-decoder=vp7"
+    config_options+=" --enable-encoder=libvpx_vp8 --enable-decoder=libvpx_vp8"
+    config_options+=" --enable-decoder=vp8_qsv"
+    config_options+=" --enable-encoder=libvpx_vp9 --enable-decoder=libvpx_vp9"
+    config_options+=" --enable-encoder=libwebp --enable-decoder=webp"
+    config_options+=" --enable-encoder=wmv1 --enable-decoder=wmv1"
+    config_options+=" --enable-encoder=wmv2 --enable-decoder=wmv2"
+    config_options+=" --enable-decoder=wmv3"
+    config_options+=" --enable-decoder=wmv3image"
+    config_options+=" --enable-encoder=wrapped_avframe --enable-decoder=wrapped_avframe"
+    config_options+=" --enable-encoder=y41p --enable-decoder=y41p"
+    config_options+=" --enable-encoder=qtrle --enable-decoder=qtrle"
+    config_options+=" --enable-decoder=ylc"
+    config_options+=" --enable-decoder=yuv4"
+    config_options+=" --enable-decoder=dvvideo --enable-encoder=dvvideo"
+    # audio codecs
+    config_options+=" --enable-decoder=aac"
+    config_options+=" --enable-decoder=aac_latm"
+    config_options+=" --enable-decoder=ac3"
+    config_options+=" --enable-encoder=alac --enable-decoder=alac"
+    config_options+=" --enable-decoder=on2avc"
+    config_options+=" --enable-encoder=flac --enable-decoder=flac"
+    config_options+=" --enable-encoder=libgsm --enable-decoder=libgsm"
+    config_options+=" --enable-encoder=libgsm_ms --enable-decoder=libgsm_ms"
+    config_options+=" --enable-decoder=mp1"
+    config_options+=" --enable-decoder=mp1float"
+    config_options+=" --enable-encoder=mp2 --enable-decoder=mp2"
+    config_options+=" --enable-encoder=libtwolame --enable-decoder=mp2 --enable-encoder=mp2fixed"
+    config_options+=" --enable-encoder=libmp3lame --enable-decoder=mp3 --enable-decoder=mp3float"
+    config_options+=" --enable-decoder=mp3adu"
+    config_options+=" --enable-decoder=mp3on4"
+    config_options+=" --enable-decoder=als"
+    config_options+=" --enable-encoder=libopus --enable-decoder=libopus"
+    config_options+=" --enable-encoder=pcm_alaw --enable-decoder=pcm_alaw"
+    config_options+=" --enable-decoder=pcm_bluray"
+    config_options+=" --enable-decoder=pcm_dvd"
+    config_options+=" --enable-decoder=pcm_f16le"
+    config_options+=" --enable-decoder=pcm_f24le"
+    config_options+=" --enable-encoder=pcm_f32be --enable-decoder=pcm_f32be"
+    config_options+=" --enable-encoder=pcm_f32le --enable-decoder=pcm_f32le"
+    config_options+=" --enable-encoder=pcm_f64be --enable-decoder=pcm_f64be"
+    config_options+=" --enable-encoder=pcm_f64le --enable-decoder=pcm_f64le"
+    config_options+=" --enable-decoder=pcm_lxf"
+    config_options+=" --enable-encoder=pcm_mulaw --enable-decoder=pcm_mulaw"
+    config_options+=" --enable-encoder=pcm_s16be --enable-decoder=pcm_s16be"
+    config_options+=" --enable-encoder=pcm_s16be_planar --enable-decoder=pcm_s16be_planar"
+    config_options+=" --enable-encoder=pcm_s16le --enable-decoder=pcm_s16le"
+    config_options+=" --enable-encoder=pcm_s16le_planar --enable-decoder=pcm_s16le_planar"
+    config_options+=" --enable-encoder=pcm_s24be --enable-decoder=pcm_s24be"
+    config_options+=" --enable-encoder=pcm_s24daud --enable-decoder=pcm_s24daud"
+    config_options+=" --enable-encoder=pcm_s24le --enable-decoder=pcm_s24le"
+    config_options+=" --enable-encoder=pcm_s24le_planar --enable-decoder=pcm_s24le_planar"
+    config_options+=" --enable-encoder=pcm_s32be --enable-decoder=pcm_s32be"
+    config_options+=" --enable-encoder=pcm_s32le --enable-decoder=pcm_s32le"
+    config_options+=" --enable-encoder=pcm_s32le_planar --enable-decoder=pcm_s32le_planar"
+    config_options+=" --enable-encoder=pcm_s64be --enable-decoder=pcm_s64be"
+    config_options+=" --enable-encoder=pcm_s64le --enable-decoder=pcm_s64le"
+    config_options+=" --enable-encoder=pcm_s8 --enable-decoder=pcm_s8"
+    config_options+=" --enable-encoder=pcm_s8_planar --enable-decoder=pcm_s8_planar"
+    config_options+=" --enable-encoder=pcm_u16be --enable-decoder=pcm_u16be"
+    config_options+=" --enable-encoder=pcm_u16le --enable-decoder=pcm_u16le"
+    config_options+=" --enable-encoder=pcm_u24be --enable-decoder=pcm_u24be"
+    config_options+=" --enable-encoder=pcm_u24le --enable-decoder=pcm_u24le"
+    config_options+=" --enable-encoder=pcm_u32be --enable-decoder=pcm_u32be"
+    config_options+=" --enable-encoder=pcm_u32le --enable-decoder=pcm_u32le"
+    config_options+=" --enable-encoder=pcm_u8 --enable-decoder=pcm_u8"
+    config_options+=" --enable-encoder=libspeex --enable-decoder=libspeex"
+    config_options+=" --enable-encoder=libvorbis --enable-decoder=libvorbis"
+    config_options+=" --enable-decoder=wmalossless"
+    config_options+=" --enable-decoder=wmapro"
+    config_options+=" --enable-encoder=wmav1 --enable-decoder=wmav1"
+    config_options+=" --enable-encoder=wmav2 --enable-decoder=wmav2"
+    config_options+=" --enable-decoder=wmavoice"
+    config_options+=" --enable-decoder=dpx"
+    config_options+=" --enable-encoder=dpx"
+    
+    # protocols
+    config_options+=" --enable-protocol=rtmp"
+    config_options+=" --enable-protocol=rtmps"
+    config_options+=" --enable-protocol=rtmpt"
+    config_options+=" --enable-protocol=rtmpts"
+    config_options+=" --enable-protocol=rtmpe"
+    config_options+=" --enable-protocol=rtmpte"
+
+
 
     for i in $CFLAGS; do
       config_options+=" --extra-cflags=$i" # --extra-cflags may not be needed here, but adds it to the final console output which I like for debugging purposes
@@ -2381,7 +2565,7 @@ build_ffmpeg_dependencies() {
 
   build_libxvid # FFmpeg now has native support, but libxvid still provides a better image.
   build_libsrt # requires gnutls, mingw-std-threads
-  build_libtesseract
+  #build_libtesseract
   build_lensfun  # requires png, zlib, iconv
   # build_libtensorflow # broken
   build_libvpx
