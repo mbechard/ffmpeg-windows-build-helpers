@@ -2226,6 +2226,8 @@ build_ffmpeg() {
     config_options+=" --enable-libzimg"
     config_options+=" --enable-libzimg"
     config_options+=" --enable-libaom"
+    config_options+=" --enable-libdav1d"
+    config_options+=" --enable-libsrt"
 
     # video codecs
     config_options+=" --enable-encoder=hap --enable-decoder=hap --enable-libsnappy"
@@ -2298,6 +2300,8 @@ build_ffmpeg() {
     config_options+=" --enable-decoder=ylc"
     config_options+=" --enable-decoder=yuv4"
     config_options+=" --enable-decoder=dvvideo --enable-encoder=dvvideo"
+    config_options+=" --enable-decoder=libdav1d"
+
     # audio codecs
     config_options+=" --enable-decoder=aac"
     config_options+=" --enable-decoder=aac_latm"
@@ -2366,6 +2370,8 @@ build_ffmpeg() {
     config_options+=" --enable-protocol=rtmpts"
     config_options+=" --enable-protocol=rtmpe"
     config_options+=" --enable-protocol=rtmpte"
+    config_options+=" --enable-protocol=srt"
+    config_options+=" --enable-demuxer=dash"
 
 
 
