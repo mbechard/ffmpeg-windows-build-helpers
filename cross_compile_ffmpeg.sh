@@ -2370,7 +2370,6 @@ build_ffmpeg() {
     config_options+=" --enable-protocol=rtmpts"
     config_options+=" --enable-protocol=rtmpe"
     config_options+=" --enable-protocol=rtmpte"
-    config_options+=" --enable-protocol=srt"
     config_options+=" --enable-demuxer=dash"
 
 
