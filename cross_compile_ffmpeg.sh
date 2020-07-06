@@ -2444,6 +2444,7 @@ build_ffmpeg() {
     config_options+=" --enable-decoder=yuv4"
     config_options+=" --enable-decoder=dvvideo --enable-encoder=dvvideo"
     config_options+=" --enable-decoder=libdav1d"
+    config_options+=" --enable-decoder=librav1e"
 
     # audio codecs
     config_options+=" --enable-decoder=aac"
@@ -2513,6 +2514,7 @@ build_ffmpeg() {
     config_options+=" --enable-protocol=rtmpts"
     config_options+=" --enable-protocol=rtmpe"
     config_options+=" --enable-protocol=rtmpte"
+    config_options+=" --enable-protocol=libsrt"
     config_options+=" --enable-demuxer=dash"
 
 
