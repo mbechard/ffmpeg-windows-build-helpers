@@ -2242,8 +2242,10 @@ build_ffmpeg() {
     postpend_configure_opts="--enable-static --disable-shared --prefix=${postpend_prefix}"
   fi
 
+  # without this, the cd on the next line is hitting the wrong dir
+  cd ..
   cd $output_dir
-    apply_patch file://$patch_dir/frei0r_load-shared-libraries-dynamically.diff
+    #apply_patch file://$patch_dir/frei0r_load-shared-libraries-dynamically.diff
     if [ "$bits_target" != "32" ]; then
     #SVT-HEVC
     git apply "../SVT-HEVC_git/ffmpeg_plugin/0001-lavc-svt_hevc-add-libsvt-hevc-encoder-wrapper.patch"
