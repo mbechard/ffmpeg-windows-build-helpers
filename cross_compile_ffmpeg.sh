@@ -2353,7 +2353,9 @@ build_ffmpeg() {
     config_options+=" --enable-libbs2b"
     config_options+=" --enable-libfreetype"
     config_options+=" --enable-libfribidi"
-    config_options+=" --enable-libgme"
+    config_options+=" --enable-libgsm"
+    config_options+=" --enable-libxml2"
+    #config_options+=" --enable-libgme"
     config_options+=" --enable-libilbc"
     config_options+=" --enable-libmodplug"
     config_options+=" --enable-libmp3lame"
@@ -2372,6 +2374,7 @@ build_ffmpeg() {
     config_options+=" --enable-libzimg"
     config_options+=" --enable-libaom"
     config_options+=" --enable-libdav1d"
+    config_options+=" --enable-librav1e"
     config_options+=" --enable-libsrt"
 
     # video codecs
@@ -2446,7 +2449,7 @@ build_ffmpeg() {
     config_options+=" --enable-decoder=yuv4"
     config_options+=" --enable-decoder=dvvideo --enable-encoder=dvvideo"
     config_options+=" --enable-decoder=libdav1d"
-    config_options+=" --enable-decoder=librav1e"
+    config_options+=" --enable-encoder=librav1e"
 
     # audio codecs
     config_options+=" --enable-decoder=aac"
