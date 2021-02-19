@@ -1658,7 +1658,7 @@ build_libxvid() {
 }
 
 build_libvpx() {
-  do_git_checkout https://chromium.googlesource.com/webm/libvpx.git
+  do_git_checkout https://chromium.googlesource.com/webm/libvpx.git libvpx_git v1.9.0
   cd libvpx_git
      apply_patch https://raw.githubusercontent.com/rdp/ffmpeg-windows-build-helpers/master/patches/vpx_160_semaphore.patch -p1 # perhaps someday can remove this after 1.6.0 or mingw fixes it LOL
     if [[ $compiler_flavors == "native" ]]; then
@@ -1669,7 +1669,7 @@ build_libvpx() {
       local config_options="--target=x86_64-win64-gcc"
     fi
     export CROSS="$cross_prefix"  # XXX investigate/report ssse3? huh wuh?
-    do_configure "$config_options --prefix=$mingw_w64_x86_64_prefix --disable-ssse3 --enable-static --disable-shared --disable-examples --disable-tools --disable-docs --disable-unit-tests --enable-vp9-highbitdepth --extra-cflags=-fno-asynchronous-unwind-tables --extra-cflags=-mstackrealign" # fno for Error: invalid register for .seh_savexmm
+    do_configure "$config_options --prefix=$mingw_w64_x86_64_prefix --enable-static --disable-shared --disable-examples --disable-tools --disable-docs --disable-unit-tests --enable-vp9-highbitdepth --extra-cflags=-fno-asynchronous-unwind-tables --extra-cflags=-mstackrealign" # fno for Error: invalid register for .seh_savexmm
     do_make_and_make_install
     unset CROSS
   cd ..
