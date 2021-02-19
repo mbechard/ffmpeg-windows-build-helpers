@@ -2038,7 +2038,7 @@ build_vlc() {
   build_lua
   build_libdvdread
   build_libdvdnav
-  build_libx265
+  #build_libx265
   build_libjpeg_turbo
   build_ffmpeg
   build_qt
@@ -2246,9 +2246,9 @@ build_ffmpeg() {
   cd ..
   cd $output_dir
     #apply_patch file://$patch_dir/frei0r_load-shared-libraries-dynamically.diff
-    if [ "$bits_target" != "32" ]; then
+    #if [ "$bits_target" != "32" ]; then
     #SVT-HEVC
-    git apply "../SVT-HEVC_git/ffmpeg_plugin/0001-lavc-svt_hevc-add-libsvt-hevc-encoder-wrapper.patch"
+    #git apply "../SVT-HEVC_git/ffmpeg_plugin/0001-lavc-svt_hevc-add-libsvt-hevc-encoder-wrapper.patch"
     #SVT-AV1 only
     #git apply "../SVT-AV1_git/ffmpeg_plugin/0001-Add-ability-for-ffmpeg-to-run-svt-av1.patch"
     #SVT-VP9 only
@@ -2258,7 +2258,7 @@ build_ffmpeg() {
     #git apply "../SVT-AV1_git/ffmpeg_plugin/0001-Add-ability-for-ffmpeg-to-run-svt-av1-with-svt-hevc.patch"
     #Add SVT-VP9 to SVT-HEVC & SVT-AV1
     #git apply "../SVT-VP9_git/ffmpeg_plugin/0001-Add-ability-for-ffmpeg-to-run-svt-vp9-with-svt-hevc-av1.patch"
-    fi
+    #fi
     if [ "$bits_target" = "32" ]; then
       local arch=x86
     else
@@ -2704,13 +2704,13 @@ build_ffmpeg_dependencies() {
   build_vamp_plugin # Needs libsndfile for 'vamp-simple-host.exe' [disabled].
   build_fftw # Uses dlfcn.
   build_libsamplerate # Needs libsndfile >= 1.0.6 and fftw >= 0.15.0 for tests. Uses dlfcn.
-  build_librubberband # Needs libsamplerate, libsndfile, fftw and vamp_plugin. 'configure' will fail otherwise. Eventhough librubberband doesn't necessarily need them (libsndfile only for 'rubberband.exe' and vamp_plugin only for "Vamp audio analysis plugin"). How to use the bundled libraries '-DUSE_SPEEX' and '-DUSE_KISSFFT'?
+  #build_librubberband # Needs libsamplerate, libsndfile, fftw and vamp_plugin. 'configure' will fail otherwise. Eventhough librubberband doesn't necessarily need them (libsndfile only for 'rubberband.exe' and vamp_plugin only for "Vamp audio analysis plugin"). How to use the bundled libraries '-DUSE_SPEEX' and '-DUSE_KISSFFT'?
   build_frei0r # Needs dlfcn. could use opencv...
-  if [ "$bits_target" != "32" ]; then
-    build_svt-hevc
+  #if [ "$bits_target" != "32" ]; then
+    #build_svt-hevc
     # build_svt-av1 # unused at present
     # build_svt-vp9 # unused at present, broken ubuntu 18.04 as well, for whatever reason... :|
-  fi
+  #fi
   build_vidstab
   #build_facebooktransform360 # needs modified ffmpeg to use it
   build_libmysofa # Needed for FFmpeg's SOFAlizer filter (https://ffmpeg.org/ffmpeg-filters.html#sofalizer). Uses dlfcn.
@@ -2730,11 +2730,11 @@ build_ffmpeg_dependencies() {
   build_lensfun  # requires png, zlib, iconv
   # build_libtensorflow # broken
   build_libvpx
-  build_libx265
+  #build_libx265
   build_libopenh264
   build_libaom
   build_dav1d
-  build_libx264 # at bottom as it might internally build a coy of ffmpeg (which needs all the above deps...
+  #build_libx264 # at bottom as it might internally build a coy of ffmpeg (which needs all the above deps...
 }
 
 build_apps() {
