@@ -2522,6 +2522,7 @@ build_ffmpeg() {
     config_options+=" --enable-protocol=libsrt"
     config_options+=" --enable-demuxer=dash"
 
+    config_options+=" --logfile=log1.log"
 
 
     for i in $CFLAGS; do
@@ -2548,6 +2549,7 @@ build_ffmpeg() {
     config_options+=" $extra_postpend_configure_options"
 
     do_configure "$config_options"
+    read -p "Press Any Key To Continue..."
     rm -f */*.a */*.dll *.exe # just in case some dependency library has changed, force it to re-link even if the ffmpeg source hasn't changed...
     rm -f already_ran_make*
     echo "doing ffmpeg make $(pwd)"
