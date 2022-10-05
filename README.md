@@ -5,7 +5,7 @@ This helper script lets you cross compile a windows-based 32 or 64-bit version o
 Note that I do offer custom builds, price negotiable. Ping me at rogerdpack@gmail.com and I'll do the work for you :) 
 
 The script allows the user to either build on a Linux host (which uses cross compiles to build windows binaries).  Windows users can use windows bash or virtualbox.
-Building on linux takes less time overall. On Windows 10, you can use the bash shell (provided that you've installed the Windows Subsystem for Linux as explained [here](http://www.howtogeek.com/249966/how-to-install-and-use-the-linux-bash-shell-on-windows-10/).
+Building on linux takes less time overall. On Windows 10, you can use the bash shell (provided that you've installed the Windows Subsystem for Linux as explained [here](http://www.howtogeek.com/249966/how-to-install-and-use-the-linux-bash-shell-on-windows-10/).  NB if you use WSL Ubuntu 20.04 you need to do an extra step: https://github.com/rdp/ffmpeg-windows-build-helpers/issues/452
 Building in windows takes longer but avoids the need of deploying a  Linux installation for the same purpose.
 I do have some "distribution release builds" of running the script here: https://sourceforge.net/projects/ffmpegwindowsbi/files
 
@@ -13,7 +13,7 @@ I do have some "distribution release builds" of running the script here: https:/
 
 You can build the project on Linux with a cross compiler toolchain, taking about 2 hours for the "options" build. 
 
-Deploy a Linux VM on the host of your choice (> 14.04 for Ubuntu), or natively on an extra computer or a dual boot system, and also, you could even create a VM temporarily, on a hosting provider such as Digital Ocean.  Cheapest way: install windows 10 bash shell.  Another option: linux on a virtualbox VM.  Another option, typically fastest: temporarily rent a box (ex: DigitalOcean https://m.do.co/c/b3030b559d17 )
+Deploy a Linux VM on the host of your choice (>= 20.04 for Ubuntu), or natively on an extra computer or a dual boot system, and also, you could even create a VM temporarily, on a hosting provider such as Digital Ocean.  Cheapest way: install windows 10 bash shell.  Another option: linux on a virtualbox VM.  Another option, typically fastest: temporarily rent a box (ex: DigitalOcean or vultr or oracle cloud free ).  If you're on a "too old" version of linux you may have luck with building it inside a "docker" see the docker folder.  Else:
 
 Download the script by cloning this repository via git:
 
@@ -29,7 +29,9 @@ It should end up with a working, statically-built ffmpeg.exe binary within the "
 
 Another option instead of running `./cross_compile_ffmpeg.sh` is to run 
 
-    $ quick_build/quick_cross_compile_ffmpeg_fdk_aac_and_x264_using_packaged_mingw64.sh script.
+    $ quick_build/quick_cross_compile_ffmpeg_fdk_aac_and_x264_using_packaged_mingw64.sh
+    
+script.
 
 Note the "quick" part here which attempts to use the locally installed `mingw-w64` package from your distribution for the cross compiler, thus skipping the time-intensive cross-compiler toolchain build step.  It's not as well tested as running the normal one, however, which builds gcc from scratch.
 
@@ -43,7 +45,7 @@ to see all the various options available.
 
 For long running builds, do run them overnight as they take a while.
 
-If you want to build a "shared" build (there's a command line option for that :) then link it into your MSVC project see https://ffmpeg.zeranoe.com/forum/viewtopic.php?f=5&t=796&p=4095#p4095
+If you want to build a "shared" build (there's a command line option for that :) then link it into your MSVC project see https://stackoverflow.com/questions/11701635/use-ffmpeg-in-visual-studio/11701737
 
 Also note that you can also "cross compile" mp4box, mplayer,mencoder and vlc binaries if you pass in the appropriate command line parameters.
 The VLC build is currently broken, send a PM if you'd want it fixed.
