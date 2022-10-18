@@ -1,2 +1,2 @@
-./cross_compile_ffmpeg.sh --build-ffmpeg-shared=y --build-ffmpeg-static=n --prefer-stable=y --enable-gpl=n --build-dependencies=y --ffmpeg-git-checkout=https://github.com/TouchDesigner/FFmpeg.git --ffmpeg-git-checkout-version=release/4.3.Derivative
+./cross_compile_ffmpeg.sh --build-ffmpeg-shared=y --build-ffmpeg-static=n --prefer-stable=y --enable-gpl=n --build-dependencies=n --ffmpeg-git-checkout=https://github.com/TouchDesigner/FFmpeg.git --ffmpeg-git-checkout-version=release/5.1.Derivative
 
