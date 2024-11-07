@@ -1738,9 +1738,8 @@ build_fribidi() {
 }
 
 build_libsrt() {
-  # do_git_checkout https://github.com/Haivision/srt.git # might be able to use these days...?
-  download_and_unpack_file https://github.com/Haivision/srt/archive/v1.4.1.tar.gz srt-1.5.1
-  cd srt-1.5.1
+  download_and_unpack_file https://github.com/Haivision/srt/archive/v1.5.4-rc.2.tar.gz srt-1.5.4-rc.2
+  cd srt-1.5.4-rc.2
     if [[ $compiler_flavors != "native" ]]; then
       apply_patch file://$patch_dir/srt.app.patch -p1
     fi
@@ -2565,7 +2564,6 @@ build_ffmpeg() {
     config_options+=" --enable-decoder=ansi"
     config_options+=" --enable-encoder=libaom_av1 --enable-decoder=libaom_av1"
     config_options+=" --enable-decoder=avrn"
-    config_options+=" --enable-encoder=ayuv --enable-decoder=ayuv"
     config_options+=" --enable-encoder=bmp --enable-decoder=bmp"
     config_options+=" --enable-decoder=exr"
     config_options+=" --enable-decoder=cfhd"
@@ -2631,6 +2629,8 @@ build_ffmpeg() {
     config_options+=" --enable-decoder=dvvideo --enable-encoder=dvvideo"
     config_options+=" --enable-decoder=libdav1d"
     config_options+=" --enable-encoder=librav1e"
+    config_options+=" --enable-decoder=vvc"
+    #config_options+=" --enable-encoder=libvvenc"
 
     # audio codecs
     config_options+=" --enable-decoder=aac"
