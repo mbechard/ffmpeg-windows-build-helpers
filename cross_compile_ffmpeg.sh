@@ -798,8 +798,9 @@ build_bzip2() {
 }
 
 build_liblzma() {
-  download_and_unpack_file https://sourceforge.net/projects/lzmautils/files/xz-5.2.5.tar.xz
-  cd xz-5.2.5
+  do_git_checkout git@github.com:tukaani-project/xz.git xz_git
+  #download_and_unpack_file https://sourceforge.net/projects/lzmautils/files/xz-5.2.5.tar.xz
+  cd xz_git
     generic_configure "--disable-xz --disable-xzdec --disable-lzmadec --disable-lzmainfo --disable-scripts --disable-doc --disable-nls"
     do_make_and_make_install
   cd ..
@@ -825,8 +826,8 @@ build_zlib() {
 }
 
 build_iconv() {
-  download_and_unpack_file https://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.16.tar.gz
-  cd libiconv-1.16
+  download_and_unpack_file https://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.17.tar.gz
+  cd libiconv-1.17
     generic_configure "--disable-nls"
     do_make "install-lib" # No need for 'do_make_install', because 'install-lib' already has install-instructions.
   cd ..
@@ -834,8 +835,9 @@ build_iconv() {
 
 build_sdl2() {
   download_and_unpack_file https://www.libsdl.org/release/SDL2-2.0.12.tar.gz
-  cd SDL2-2.0.12
-    apply_patch file://$patch_dir/SDL2-2.0.12_lib-only.diff
+  do_git_checkout https://github.com/libsdl-org/SDL.git SDL_git SDL2
+  cd SDL_git
+    #apply_patch file://$patch_dir/SDL2-2.0.12_lib-only.diff
     if [[ ! -f configure.bak ]]; then
       sed -i.bak "s/ -mwindows//" configure # Allow ffmpeg to output anything to console.
     fi
@@ -924,16 +926,16 @@ build_libtensorflow() {
 
 build_glib() {
   export CPPFLAGS="$CPPFLAGS -DLIBXML_STATIC -liconv" # gettext build...
-  generic_download_and_make_and_install  https://ftp.gnu.org/pub/gnu/gettext/gettext-0.21.tar.gz
+  #generic_download_and_make_and_install  https://ftp.gnu.org/pub/gnu/gettext/gettext-0.21.tar.gz
   reset_cppflags
   generic_download_and_make_and_install  https://github.com/libffi/libffi/releases/download/v3.3/libffi-3.3.tar.gz # also dep
-  download_and_unpack_file https://gitlab.gnome.org/GNOME/glib/-/archive/2.64.3/glib-2.64.3.tar.gz
-  cd glib-2.64.3
-    apply_patch  file://$patch_dir/glib-2.64.3_mingw-static.patch -p1
+  download_and_unpack_file https://gitlab.gnome.org/GNOME/glib/-/archive/2.83.0/glib-2.83.0.tar.gz
+  cd glib-2.83.0
+    #apply_patch  file://$patch_dir/glib-2.64.3_mingw-static.patch -p1
     export CPPFLAGS="$CPPFLAGS -pthread -DGLIB_STATIC_COMPILATION"
     export CXXFLAGS="$CFLAGS" # Not certain this is needed, but it doesn't hurt
     export LDFLAGS="-L${mingw_w64_x86_64_prefix}/lib" # For some reason the frexp configure checks fail without this as math.h isn't found when cross-compiling; no negative impact for native builds
-    local meson_options="--prefix=${mingw_w64_x86_64_prefix} --libdir=${mingw_w64_x86_64_prefix}/lib --buildtype=release --default-library=static -Dinternal_pcre=true -Dforce_posix_threads=true . build"
+    local meson_options="--prefix=${mingw_w64_x86_64_prefix} --libdir=${mingw_w64_x86_64_prefix}/lib --buildtype=release --default-library=static -Dforce_posix_threads=true . build"
     if [[ $compiler_flavors != "native" ]]; then
       get_local_meson_cross_with_propeties # Need to add flags to meson properties; otherwise ran into some issues
       meson_options+=" --cross-file=meson-cross.mingw.txt"
@@ -1087,8 +1089,8 @@ build_freetype() {
 }
 
 build_libxml2() {
-  download_and_unpack_file http://xmlsoft.org/sources/libxml2-2.9.10.tar.gz libxml2-2.9.10
-  cd libxml2-2.9.10
+  do_git_checkout https://gitlab.gnome.org/GNOME/libxml2.git libxml2_git v2.13.4
+  cd libxml2_git
     generic_configure "--with-ftp=no --with-http=no --with-python=no"
     do_make_and_make_install
   cd ..
@@ -1122,8 +1124,8 @@ build_libvmaf() {
 }
 
 build_fontconfig() {
-  download_and_unpack_file https://www.freedesktop.org/software/fontconfig/release/fontconfig-2.13.92.tar.xz
-  cd fontconfig-2.13.92
+  do_git_checkout https://gitlab.freedesktop.org/fontconfig/fontconfig.git fontconfig_git 2.15.0
+  cd fontconfig_git
     #export CFLAGS= # compile fails with -march=sandybridge ... with mingw 4.0.6 at least ...
     generic_configure "--enable-iconv --enable-libxml2 --disable-docs --with-libiconv" # Use Libxml2 instead of Expat.
     do_make_and_make_install
@@ -1170,8 +1172,8 @@ build_librtmfp() {
 }
 
 build_libnettle() {
-  download_and_unpack_file https://ftp.gnu.org/gnu/nettle/nettle-3.6.tar.gz
-  cd nettle-3.6
+  do_git_checkout https://git.lysator.liu.se/nettle/nettle.git nettle_git nettle_3.10_release_20240616
+  cd nettle_git
     local config_options="--disable-openssl --disable-documentation" # in case we have both gnutls and openssl, just use gnutls [except that gnutls uses this so...huh?
     if [[ $compiler_flavors == "native" ]]; then
       config_options+=" --libdir=${mingw_w64_x86_64_prefix}/lib" # Otherwise native builds install to /lib32 or /lib64 which gnutls doesn't find
@@ -1182,16 +1184,16 @@ build_libnettle() {
 }
 
 build_unistring() {
-  generic_download_and_make_and_install https://ftp.gnu.org/gnu/libunistring/libunistring-0.9.10.tar.xz
+  generic_download_and_make_and_install https://ftp.gnu.org/gnu/libunistring/libunistring-1.3.tar.xz
 }
 
 build_libidn2() {
-  generic_download_and_make_and_install https://ftp.gnu.org/gnu/libidn/libidn2-2.3.0.tar.gz
+  generic_download_and_make_and_install https://ftp.gnu.org/gnu/libidn/libidn2-2.3.7.tar.gz
 }
 
 build_gnutls() {
-  download_and_unpack_file https://www.gnupg.org/ftp/gcrypt/gnutls/v3.6/gnutls-3.6.15.tar.xz
-  cd gnutls-3.6.15
+  download_and_unpack_file https://www.gnupg.org/ftp/gcrypt/gnutls/v3.7/gnutls-3.7.11.tar.xz
+  cd gnutls-3.7.11
     # --disable-cxx don't need the c++ version, in an effort to cut down on size... XXXX test size difference...
     # --enable-local-libopts to allow building with local autogen installed,
     # --disable-guile is so that if it finds guile installed (cygwin did/does) it won't try and link/build to it and fail...
