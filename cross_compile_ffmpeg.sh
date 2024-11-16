@@ -2851,9 +2851,11 @@ build_ffmpeg_dependencies() {
     build_libxavs
   fi
 
-  build_libdavs2
-  if [[ $host_target != 'i686-w64-mingw32' ]]; then
-    build_libxavs2
+  if [[ $enable_gpl == 'y' ]]; then
+  	build_libdavs2
+    if [[ $host_target != 'i686-w64-mingw32' ]]; then
+      build_libxavs2
+    fi
   fi
 
   build_meson_cross
