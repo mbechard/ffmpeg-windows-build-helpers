@@ -1828,7 +1828,11 @@ build_libvpx() {
     fi
     export CROSS="$cross_prefix"  
     # VP8 encoder *requires* sse3 support
-    do_configure "$config_options --prefix=$mingw_w64_x86_64_prefix --enable-ssse3 --enable-static --disable-shared --disable-examples --disable-tools --disable-docs --disable-unit-tests --enable-vp9-highbitdepth --extra-cflags=-fno-asynchronous-unwind-tables --extra-cflags=-mstackrealign" # fno for Error: invalid register for .seh_savexmm
+	local do_sse="--enable-sse3"
+    if [[ `uname -p` == "arm" ]]; then
+	  do_sse=""
+	fi
+    do_configure "$config_options --prefix=$mingw_w64_x86_64_prefix $do_sse --enable-static --disable-shared --disable-examples --disable-tools --disable-docs --disable-unit-tests --enable-vp9-highbitdepth --extra-cflags=-fno-asynchronous-unwind-tables --extra-cflags=-mstackrealign" # fno for Error: invalid register for .seh_savexmm
     do_make_and_make_install
     unset CROSS
   cd ..
