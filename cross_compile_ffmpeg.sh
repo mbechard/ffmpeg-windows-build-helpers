@@ -724,7 +724,19 @@ generic_configure() {
   build_triple="${build_triple:-$(gcc -dumpmachine)}"
   local extra_configure_options="$1"
   if [[ -n $build_triple ]]; then extra_configure_options+=" --build=$build_triple"; fi
-  do_configure "--host=$host_target --prefix=$mingw_w64_x86_64_prefix --disable-shared --enable-static $extra_configure_options"
+  local shared_static_enables="--disable-shared --enable-static"
+  if [[ -n "$2" ]]; then
+	  shared_static_enables="$2"
+  fi
+  do_configure "--host=$host_target --prefix=$mingw_w64_x86_64_prefix $shared_static_enables $extra_configure_options"
+}
+
+generic_configure_lgpl() {
+  local shared_static_enables=""
+  if [[ $enable_gpl == 'n' ]]; then
+	  shared_static_enables="--enable-shared --disable-static"
+  fi
+  generic_configure "$1" "$shared_static_enables"
 }
 
 # params: url, optional "english name it will unpack to"
@@ -1389,7 +1401,7 @@ build_lame() {
   do_svn_checkout https://svn.code.sf.net/p/lame/svn/trunk/lame lame_svn 
   cd lame_svn
     sed -i.bak '1s/^\xEF\xBB\xBF//' libmp3lame/i386/nasm.h # Remove a UTF-8 BOM that breaks nasm if it's still there; should be fixed in trunk eventually https://sourceforge.net/p/lame/patches/81/
-    generic_configure "--enable-nasm --enable-libmpg123"
+    generic_configure_lgpl "--enable-nasm --disable-frontend"
     do_make_and_make_install
   cd ..
 }
