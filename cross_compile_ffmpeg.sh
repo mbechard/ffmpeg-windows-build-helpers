@@ -720,23 +720,36 @@ download_and_unpack_file() {
   fi
 }
 
+#generic_configure() {
+  #if [[ $compiler_flavors != "native" ]]; then
+    #build_triple="${build_triple:-$(gcc -dumpmachine)}"
+  #fi
+  #local extra_configure_options="$1"
+  #if [[ -n $build_triple ]]; then extra_configure_options+=" --build=$build_triple"; fi
+  #local shared_static_enables="--disable-shared --enable-static"
+  #if [[ -n "$2" ]]; then
+	  #shared_static_enables="$2"
+  #fi
+  #do_configure "--host=$host_target --prefix=$mingw_w64_x86_64_prefix $shared_static_enables $extra_configure_options"
+#}
+
 generic_configure() {
   if [[ $compiler_flavors != "native" ]]; then
     build_triple="${build_triple:-$(gcc -dumpmachine)}"
   fi
+  local shared_static_enables="--disable-shared --enable-static"
+  if [[ -n $2 ]]; then
+    shared_static_enables="$2"
+  fi
   local extra_configure_options="$1"
   if [[ -n $build_triple ]]; then extra_configure_options+=" --build=$build_triple"; fi
-  local shared_static_enables="--disable-shared --enable-static"
-  if [[ -n "$2" ]]; then
-	  shared_static_enables="$2"
-  fi
   do_configure "--host=$host_target --prefix=$mingw_w64_x86_64_prefix $shared_static_enables $extra_configure_options"
 }
 
 generic_configure_lgpl() {
   local shared_static_enables=""
   if [[ $enable_gpl == 'n' ]]; then
-	  shared_static_enables="--enable-shared --disable-static"
+    shared_static_enables="--enable-shared --disable-static"
   fi
   generic_configure "$1" "$shared_static_enables"
 }
