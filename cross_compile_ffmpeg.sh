@@ -825,7 +825,7 @@ build_bzip2() {
 }
 
 build_liblzma() {
-  do_git_checkout git@github.com:tukaani-project/xz.git xz_git
+  do_git_checkout https://github.com/tukaani-project/xz.git
   #download_and_unpack_file https://sourceforge.net/projects/lzmautils/files/xz-5.2.5.tar.xz
   cd xz_git
     generic_configure "--disable-xz --disable-xzdec --disable-lzmadec --disable-lzmainfo --disable-scripts --disable-doc --disable-nls"
