@@ -2558,7 +2558,7 @@ build_ffmpeg() {
     # general util libs
     config_options+=" --enable-gmp"
     config_options+=" --enable-gnutls"
-    config_options+=" --enable-libbs2b"
+    #config_options+=" --enable-libbs2b"
     config_options+=" --enable-libfreetype"
     config_options+=" --enable-libfribidi"
     config_options+=" --enable-libgsm"
@@ -2928,9 +2928,9 @@ build_ffmpeg_dependencies() {
   build_libmodplug # Uses dlfcn.
   build_libgme
   build_libbluray # Needs libxml >= 2.6, freetype, fontconfig. Uses dlfcn.
-  build_libbs2b # Needs libsndfile. Uses dlfcn.
+  #build_libbs2b # Needs libsndfile. Uses dlfcn.
   build_libsoxr
-  build_libflite
+  #build_libflite
   build_libsnappy # Uses zlib (only for unittests [disabled]) and dlfcn.
   build_vamp_plugin # Needs libsndfile for 'vamp-simple-host.exe' [disabled].
   build_fftw # Uses dlfcn.
@@ -2965,8 +2965,8 @@ build_ffmpeg_dependencies() {
     build_libaribcaption
   fi
   build_libaribb24
-  build_libtesseract
-  build_lensfun  # requires png, zlib, iconv
+  #build_libtesseract
+  #build_lensfun  # requires png, zlib, iconv
   # build_libtensorflow # broken
   build_libvpx
   #build_libx265
