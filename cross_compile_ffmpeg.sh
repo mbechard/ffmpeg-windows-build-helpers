@@ -1206,6 +1206,8 @@ build_libidn2() {
 build_gnutls() {
   download_and_unpack_file https://www.gnupg.org/ftp/gcrypt/gnutls/v3.7/gnutls-3.7.11.tar.xz
   cd gnutls-3.7.11
+    # Add missing OSStatus argument on macOS
+    apply_patch file://$patch_dir/gnutls-3.7.x-OSStatus.patch -p1
     # --disable-cxx don't need the c++ version, in an effort to cut down on size... XXXX test size difference...
     # --enable-local-libopts to allow building with local autogen installed,
     # --disable-guile is so that if it finds guile installed (cygwin did/does) it won't try and link/build to it and fail...
