@@ -721,7 +721,9 @@ download_and_unpack_file() {
 }
 
 generic_configure() {
-  build_triple="${build_triple:-$(gcc -dumpmachine)}"
+  if [[ $compiler_flavors != "native" ]]; then
+    build_triple="${build_triple:-$(gcc -dumpmachine)}"
+  fi
   local extra_configure_options="$1"
   if [[ -n $build_triple ]]; then extra_configure_options+=" --build=$build_triple"; fi
   local shared_static_enables="--disable-shared --enable-static"
