@@ -1334,6 +1334,8 @@ build_libogg() {
 build_libvorbis() {
   do_git_checkout https://github.com/xiph/vorbis.git
   cd vorbis_git
+    # removes -force_cpusubtype_ALL from compile flags for macOS
+    apply_patch file://$patch_dir/vorbis-force_cpusubtype_ALL.patch -p1
     generic_configure "--disable-docs --disable-examples --disable-oggtest"
     do_make_and_make_install
   cd ..
