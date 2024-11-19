@@ -59,7 +59,7 @@ check_missing_packages () {
     VENDOR="redhat"
   fi
   # zeranoe's build scripts use wget, though we don't here...
-  local check_packages=('ragel' 'curl' 'pkg-config' 'make' 'git' 'svn' 'gcc' 'autoconf' 'automake' 'yasm' 'cvs' 'flex' 'bison' 'makeinfo' 'g++' 'ed' 'pax' 'unzip' 'patch' 'wget' 'xz' 'nasm' 'gperf' 'autogen' 'bzip2' 'realpath' 'meson' 'clang' 'python')
+  local check_packages=('ragel' 'curl' 'pkg-config' 'make' 'git' 'svn' 'gcc' 'autoconf' 'automake' 'yasm' 'cvs' 'flex' 'bison' 'makeinfo' 'g++' 'ed' 'pax' 'unzip' 'patch' 'wget' 'xz' 'nasm' 'gperf' 'autogen' 'bzip2' 'realpath' 'meson' 'clang' 'python' 'autopoint')
   # autoconf-archive is just for leptonica FWIW
   # I'm not actually sure if VENDOR being set to centos is a thing or not. On all the centos boxes I can test on it's not been set at all.
   # that being said, if it where set I would imagine it would be set to centos... And this contition will satisfy the "Is not initially set"
@@ -86,7 +86,7 @@ check_missing_packages () {
     echo 'Install the missing packages before running this script.'
     determine_distro
 
-    apt_pkgs='subversion ragel curl texinfo g++ ed bison flex cvs yasm automake libtool autoconf gcc cmake git make pkg-config zlib1g-dev unzip pax nasm gperf autogen bzip2 autoconf-archive p7zip-full meson clang'
+    apt_pkgs='subversion ragel curl texinfo g++ ed bison flex cvs yasm automake libtool autoconf gcc cmake git make pkg-config zlib1g-dev unzip pax nasm gperf autogen bzip2 autoconf-archive p7zip-full meson clang autopoint'
 
     [[ $DISTRO == "debian" ]] && apt_pkgs="$apt_pkgs libtool-bin ed" # extra for debian
     case "$DISTRO" in
@@ -850,9 +850,8 @@ build_iconv() {
 }
 
 build_sdl2() {
-  download_and_unpack_file https://www.libsdl.org/release/SDL2-2.0.12.tar.gz
-  do_git_checkout https://github.com/libsdl-org/SDL.git SDL_git SDL2
-  cd SDL_git
+  download_and_unpack_file https://www.libsdl.org/release/SDL2-2.30.9.tar.gz
+  cd SDL2-2.30.9
     #apply_patch file://$patch_dir/SDL2-2.0.12_lib-only.diff
     if [[ ! -f configure.bak ]]; then
       sed -i.bak "s/ -mwindows//" configure # Allow ffmpeg to output anything to console.
@@ -942,17 +941,25 @@ build_libtensorflow() {
 
 build_glib() {
   export CPPFLAGS="$CPPFLAGS -DLIBXML_STATIC -liconv" # gettext build...
-  #generic_download_and_make_and_install  https://ftp.gnu.org/pub/gnu/gettext/gettext-0.21.tar.gz
+  if [[ $compiler_flavors != "native" ]]; then
+    generic_download_and_make_and_install  https://ftp.gnu.org/pub/gnu/gettext/gettext-0.21.tar.gz
+  fi
   reset_cppflags
   generic_download_and_make_and_install  https://github.com/libffi/libffi/releases/download/v3.3/libffi-3.3.tar.gz # also dep
-  download_and_unpack_file https://gitlab.gnome.org/GNOME/glib/-/archive/2.83.0/glib-2.83.0.tar.gz
-  cd glib-2.83.0
-    #apply_patch  file://$patch_dir/glib-2.64.3_mingw-static.patch -p1
+  if [[ $compiler_flavors != "native" ]]; then
+    download_and_unpack_file https://gitlab.gnome.org/GNOME/glib/-/archive/2.64.3/glib-2.64.3.tar.gz
+    cd glib-2.64.3
+    apply_patch  file://$patch_dir/glib-2.64.3_mingw-static.patch -p1
+  else
+    download_and_unpack_file https://gitlab.gnome.org/GNOME/glib/-/archive/2.83.0/glib-2.83.0.tar.gz
+    cd glib-2.83.0
+  fi
     export CPPFLAGS="$CPPFLAGS -pthread -DGLIB_STATIC_COMPILATION"
     export CXXFLAGS="$CFLAGS" # Not certain this is needed, but it doesn't hurt
     export LDFLAGS="-L${mingw_w64_x86_64_prefix}/lib" # For some reason the frexp configure checks fail without this as math.h isn't found when cross-compiling; no negative impact for native builds
     local meson_options="--prefix=${mingw_w64_x86_64_prefix} --libdir=${mingw_w64_x86_64_prefix}/lib --buildtype=release --default-library=static -Dforce_posix_threads=true . build"
     if [[ $compiler_flavors != "native" ]]; then
+      meson_options+=" -Dinternal_pcre=true"
       get_local_meson_cross_with_propeties # Need to add flags to meson properties; otherwise ran into some issues
       meson_options+=" --cross-file=meson-cross.mingw.txt"
     fi
