@@ -3204,7 +3204,7 @@ if [[ $compiler_flavors == "native" ]]; then
   mkdir -p "$work_dir"
   cd "$work_dir"
     build_ffmpeg_dependencies
-    build_ffmpeg
+    build_ffmpeg shared
   cd ..
 fi
 
