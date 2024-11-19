@@ -2451,6 +2451,8 @@ build_ffmpeg() {
       if [[ $OSTYPE != darwin* ]]; then
         unset PKG_CONFIG_LIBDIR # just use locally packages for all the xcb stuff for now, you need to install them locally first...
         init_options+=" --enable-libv4l2 --enable-libxcb --enable-libxcb-shm --enable-libxcb-xfixes --enable-libxcb-shape "
+      else
+	    init_options+=" --enable-rpath"
       fi
     fi
     if [[ `uname` =~ "5.1" ]]; then
@@ -3198,7 +3200,7 @@ if [[ $compiler_flavors == "native" ]]; then
   mkdir -p $cur_dir/cross_compilers/native/bin
   mingw_w64_x86_64_prefix="$(realpath $cur_dir/cross_compilers/native)"
   mingw_bin_path="$(realpath $cur_dir/cross_compilers/native/bin)" # sdl needs somewhere to drop "binaries"??
-  export PKG_CONFIG_PATH="$mingw_w64_x86_64_prefix/lib/pkgconfig"
+  export PKG_CONFIG_PATH="$mingw_w64_x86_64_prefix/lib/pkgconfig:/usr/local/lib/pkgconfig"
   export PATH="$mingw_bin_path:$original_path"
   make_prefix_options="PREFIX=$mingw_w64_x86_64_prefix"
   if [[ $(uname -m) =~ 'i686' ]]; then
