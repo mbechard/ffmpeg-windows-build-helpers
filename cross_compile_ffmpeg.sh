@@ -2595,6 +2595,7 @@ build_ffmpeg() {
     config_options+=" --enable-libdav1d"
     config_options+=" --enable-librav1e"
     config_options+=" --enable-libsrt"
+    config_options+=" --enable-libvvenc"
 
     # video codecs
     config_options+=" --enable-encoder=hap --enable-decoder=hap --enable-libsnappy"
@@ -2669,7 +2670,7 @@ build_ffmpeg() {
     config_options+=" --enable-decoder=libdav1d"
     config_options+=" --enable-encoder=librav1e"
     config_options+=" --enable-decoder=vvc"
-    #config_options+=" --enable-encoder=libvvenc"
+    config_options+=" --enable-encoder=libvvenc"
 
     # audio codecs
     config_options+=" --enable-decoder=aac"
