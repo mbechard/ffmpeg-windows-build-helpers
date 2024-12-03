@@ -3215,7 +3215,8 @@ if [[ $compiler_flavors == "native" ]]; then
   mkdir -p $cur_dir/cross_compilers/native/bin
   mingw_w64_x86_64_prefix="$(realpath $cur_dir/cross_compilers/native)"
   mingw_bin_path="$(realpath $cur_dir/cross_compilers/native/bin)" # sdl needs somewhere to drop "binaries"??
-  export PKG_CONFIG_PATH="$mingw_w64_x86_64_prefix/lib/pkgconfig:/usr/local/lib/pkgconfig"
+  #export PKG_CONFIG_PATH="$mingw_w64_x86_64_prefix/lib/pkgconfig:/usr/local/lib/pkgconfig"
+  export PKG_CONFIG_PATH="$mingw_w64_x86_64_prefix/lib/pkgconfig"
   export PATH="$mingw_bin_path:$original_path"
   make_prefix_options="PREFIX=$mingw_w64_x86_64_prefix"
   if [[ $(uname -m) =~ 'i686' ]]; then
