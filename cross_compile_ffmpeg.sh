@@ -1780,8 +1780,8 @@ build_fribidi() {
 }
 
 build_libsrt() {
-  download_and_unpack_file https://github.com/Haivision/srt/archive/v1.5.4-rc.2.tar.gz srt-1.5.4-rc.2
-  cd srt-1.5.4-rc.2
+  do_git_checkout https://github.com/mbechard/srt.git libsrt_git "origin/v1.5.4-hotfix"
+  cd libsrt_git
     if [[ $compiler_flavors != "native" ]]; then
       apply_patch file://$patch_dir/srt.app.patch -p1
     fi
