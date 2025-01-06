@@ -1797,6 +1797,13 @@ build_libass() {
   do_git_checkout_and_make_install https://github.com/libass/libass.git
 }
 
+build_vulkan() {
+  do_git_checkout https://github.com/KhronosGroup/Vulkan-Headers.git
+  cd Vulkan-Headers_git
+    do_cmake_and_install "-DCMAKE_BUILD_TYPE=Release"
+  cd ..
+}
+
 build_libaribb24() {
   do_git_checkout https://github.com/nkoriyama/aribb24
   cd aribb24
@@ -2758,6 +2765,9 @@ build_ffmpeg() {
 
     config_options+=" --logfile=log1.log"
 
+    if [[ $OSTYPE != darwin* ]]; then
+      config_options+=" --enable-vulkan"
+    fi
 
     for i in $CFLAGS; do
       config_options+=" --extra-cflags=$i" # --extra-cflags may not be needed here, but adds it to the final console output which I like for debugging purposes
@@ -2999,6 +3009,9 @@ build_ffmpeg_dependencies() {
   build_libopenh264
   build_libaom
   build_dav1d
+  if [[ $OSTYPE != darwin* ]]; then
+    build_vulkan
+  fi
   #build_libx264 # at bottom as it might internally build a coy of ffmpeg (which needs all the above deps...
   build_avisynth
  }
