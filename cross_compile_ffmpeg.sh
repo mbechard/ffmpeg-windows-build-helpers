@@ -2767,6 +2767,11 @@ build_ffmpeg() {
 
     if [[ $OSTYPE != darwin* ]]; then
       config_options+=" --enable-vulkan"
+    else
+      config_options+=" --enable-videotoolbox"
+      config_options+=" --enable-encoder=prores_videotoolbox"
+      config_options+=" --enable-encoder=h264_videotoolbox"
+      config_options+=" --enable-encoder=hevc_videotoolbox"
     fi
 
     for i in $CFLAGS; do
